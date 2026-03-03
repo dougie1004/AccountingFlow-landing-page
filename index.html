@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AccountingFlow | 스타트업 재무 리스크 탐지 엔진</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard+Variable:wght@100..900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-bg: #02040a;
+            --surface: rgba(17, 24, 39, 0.7);
+            --accent: #3b82f6;
+            --accent-glow: rgba(59, 130, 246, 0.5);
+            --electric-blue: #60a5fa;
+            --text-primary: #f9fafb;
+            --text-secondary: #9ca3af;
+            --danger: #ff4d4d;
+            --danger-glow: rgba(255, 77, 77, 0.3);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --card-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--primary-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(var(--primary-bg), var(--accent), var(--primary-bg));
+            border-radius: 10px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Pretendard Variable', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--primary-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(96, 165, 250, 0.05) 0%, transparent 40%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        header {
+            padding: 1.5rem 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .logo {
+            font-size: 1.6rem;
+            font-weight: 900;
+            letter-spacing: -1.5px;
+            background: linear-gradient(135deg, #fff 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Titles */
+        h1,
+        h2,
+        h3 {
+            word-break: keep-all;
+        }
+
+        /* Hero */
+        .hero {
+            padding: 10rem 0 8rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 800px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.12) 0%, transparent 70%);
+            z-index: -1;
+            filter: blur(50px);
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 2rem;
+            letter-spacing: -2px;
+            background: linear-gradient(180deg, #fff 0%, #94a3b8 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: clamp(1.1rem, 2vw, 1.4rem);
+            color: var(--text-secondary);
+            margin-bottom: 3.5rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Buttons with Animation */
+        .btn {
+            padding: 1.1rem 2.5rem;
+            border-radius: 100px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            border: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 0 40px var(--accent-glow);
+        }
+
+        .btn-primary::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .btn-primary:hover::after {
+            left: 100%;
+        }
+
+        .btn-outline {
+            background: var(--surface);
+            border: 1px solid var(--glass-border);
+            color: var(--text-primary);
+            backdrop-filter: blur(5px);
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--text-secondary);
+            transform: translateY(-2px);
+        }
+
+        /* Hero Image - Glassmockup style */
+        .hero-image {
+            margin-top: 6rem;
+            position: relative;
+            padding: 20px;
+            perspective: 1000px;
+        }
+
+        .hero-image img {
+            width: 100%;
+            border-radius: 30px;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--card-shadow);
+            transform: rotateX(5deg);
+            transition: transform 0.6s ease;
+        }
+
+        .hero-image:hover img {
+            transform: rotateX(0deg) scale(1.02);
+        }
+
+        /* Section Styling */
+        .section {
+            padding: 10rem 0;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 5rem;
+        }
+
+        .section-title h2 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            letter-spacing: -1.5px;
+        }
+
+        .section-title p {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+        }
+
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+        }
+
+        /* Premium Glass Card */
+        .card {
+            background: var(--surface);
+            padding: 3.5rem 2.5rem;
+            border-radius: 32px;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(12px);
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-15px);
+            border-color: var(--accent);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), 0 0 20px rgba(59, 130, 246, 0.1);
+        }
+
+        .card i {
+            display: inline-flex;
+            width: 60px;
+            height: 60px;
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            border-radius: 16px;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 0 15px var(--danger-glow);
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1.25rem;
+            font-weight: 700;
+        }
+
+        .card p {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+
+        /* Feature Section Upgrade */
+        .features {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 5rem;
+            align-items: center;
+        }
+
+        .feature-item {
+            background: transparent;
+            border-bottom: 1px solid var(--glass-border);
+            padding: 2rem 0;
+            display: flex;
+            gap: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .feature-item:hover {
+            padding-left: 1rem;
+            border-bottom-color: var(--accent);
+        }
+
+        .feature-item i {
+            color: var(--accent);
+            font-size: 1.4rem;
+            filter: drop-shadow(0 0 8px var(--accent-glow));
+        }
+
+        /* Evidence Section */
+        .evidence-img {
+            width: 100%;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            margin-bottom: 2rem;
+            transition: transform 0.4s ease;
+            box-shadow: var(--card-shadow);
+        }
+
+        .card:hover .evidence-img {
+            transform: scale(1.05);
+        }
+
+        /* Scarcity Box */
+        .scarcity-box {
+            background: radial-gradient(circle at top right, rgba(59, 130, 246, 0.15), transparent), var(--surface);
+            padding: 5rem;
+            border-radius: 40px;
+            text-align: center;
+            border: 1px solid var(--accent);
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.15);
+            backdrop-filter: blur(20px);
+            margin: 6rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .scarcity-box::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.1), transparent 70%);
+            transform: translate(-50%, -50%);
+            animation: pulse 4s infinite ease-in-out;
+            z-index: -1;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.3;
+            }
+
+            50% {
+                transform: translate(-50%, -50%) scale(1.5);
+                opacity: 0.6;
+            }
+
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.3;
+            }
+        }
+
+        .badge {
+            background: rgba(59, 130, 246, 0.15);
+            color: var(--accent);
+            padding: 0.6rem 1.5rem;
+            border-radius: 100px;
+            font-size: 0.9rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            margin-bottom: 2.5rem;
+            display: inline-block;
+        }
+
+        .live-count {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--accent);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #10b981;
+            animation: blink 1.5s infinite;
+        }
+
+        @keyframes blink {
+            0% {
+                opacity: 0.2;
+            }
+
+            50% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0.2;
+            }
+        }
+
+        footer {
+            padding: 4rem 0;
+            border-top: 1px solid var(--glass-border);
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* LOI Card */
+        .loi-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0) 100%), var(--surface);
+            padding: 4rem;
+            border-radius: 40px;
+            border: 1px solid var(--glass-border);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 992px) {
+            .features {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            .hero-image {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .section {
+                padding: 6rem 0;
+            }
+
+            .hero h1 {
+                font-size: 2.8rem;
+            }
+
+            .scarcity-box {
+                padding: 3rem 1.5rem;
+            }
+
+            .cta-group {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <header>
+            <div class="logo">AccountingFlow</div>
+            <nav>
+                <a href="https://forms.gle/TgRXNMHf54uuyv8b8" target="_blank" class="btn btn-outline"
+                    style="padding: 0.5rem 1rem; font-size: 0.9rem;">진단 시작하기</a>
+            </nav>
+        </header>
+
+        <!-- HERO SECTION -->
+        <section class="hero">
+            <badge class="badge">Pilot Program 참여기업 모집 중</badge>
+            <h1>당신의 스타트업은<br>언제 자금이 끊길지 알고 있습니까?</h1>
+            <p>전문가의 재무 리스크 진단 서비스와 함께<br>초기 창업자를 위한 3개월 무료 체험 혜택을 지금 확보하세요.</p>
+
+            <div class="cta-group">
+                <a href="https://forms.gle/TgRXNMHf54uuyv8b8" target="_blank" class="btn btn-primary">우리 회사 위험도 진단하기 <i
+                        class="fas fa-arrow-right"></i></a>
+                <a href="https://forms.gle/TgRXNMHf54uuyv8b8" target="_blank" class="btn btn-outline">체험판 우선 대기 등록</a>
+            </div>
+
+            <div class="hero-image">
+                <img src="%EA%B2%BD%EC%98%81%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C.png" alt="AccountingFlow 경영 대시보드">
+            </div>
+        </section>
+
+        <!-- PROBLEM SECTION -->
+        <section id="problem" class="section">
+            <div class="section-title">
+                <h2>왜 스타트업은 위험을 모른 채 운영될까?</h2>
+                <p>매출이 있어도 망할 수 있습니다. 진짜 문제는 “몰라서” 대응하지 못한다는 것입니다.</p>
+            </div>
+
+            <div class="problem-grid">
+                <div class="card">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>손익계산서의 함정</h3>
+                    <p>장부상 흑자라도 현금 흐름이 막히면 순식간에 파산할 수 있습니다. 고갈 시점(Runway)을 계산하십니까?</p>
+                </div>
+                <div class="card">
+                    <i class="fas fa-receipt"></i>
+                    <h3>사후 처리식 세무</h3>
+                    <p>세무는 이미 벌어진 일의 결과입니다. 통제되지 않는 비용은 성장의 걸림돌이 됩니다.</p>
+                </div>
+                <div class="card">
+                    <i class="fas fa-triangle-exclamation"></i>
+                    <h3>통제 기준의 부재</h3>
+                    <p>숫자는 있지만 무엇이 위험한지 판단할 기준이 없습니다. 직관이 아닌 시스템으로 관리해야 합니다.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SOLUTION SECTION -->
+        <section id="solution" class="section solution-section">
+            <div class="section-title">
+                <h2>AccountingFlow는 무엇이 다른가?</h2>
+                <p>데이터의 “기록”을 넘어 재무의 “통제”로 전환합니다.</p>
+            </div>
+
+            <div class="features">
+                <div>
+                    <img src="%EA%B2%BD%EC%98%81%EC%84%B1%EA%B3%BC%EB%A6%AC%ED%8F%AC%ED%8A%B8.png"
+                        alt="AccountingFlow 경영성과리포트"
+                        style="width: 100%; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                    <div style="margin-top: 2rem;">
+                        <img src="%EC%9E%94%EC%97%AC%20%EA%B0%80%EC%9A%A9%20%EC%9E%90%EA%B8%88.png" alt="잔여 가용 자금 분석"
+                            style="width: 100%; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                    </div>
+                </div>
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <i class="fas fa-check-circle"></i>
+                        <div>
+                            <h4>구조 기반 재무 리스크 분석</h4>
+                            <p>단순 장부를 넘어 회사의 재무 구조적 취약점을 AI가 탐지합니다.</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check-circle"></i>
+                        <div>
+                            <h4>흑자부도 시나리오 자동 탐지</h4>
+                            <p>현금 유입과 유출의 불일치를 분석하여 잠재적 부도 위험을 미리 경고합니다.</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check-circle"></i>
+                        <div>
+                            <h4>월 Closing 기반 위험 경고</h4>
+                            <p>매월 마감 보고서를 통해 불필요한 비용과 이상 징후를 즉시 알려줍니다.</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check-circle"></i>
+                        <div>
+                            <h4>투자자 대응용 재무 레포트</h4>
+                            <p>VC가 신뢰할 수 있는 구조화된 재무 데이터 형식으로 내보내기를 지원합니다.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- ANALYSIS EVIDENCE SECTION -->
+            <section class="section">
+                <div class="section-title">
+                    <h2>숫자로 증명하는 경영 의사결정</h2>
+                    <p>AccountingFlow는 직관이 아닌 객관적 데이터로 회사의 미래를 그리게 합니다.</p>
+                </div>
+                <div class="problem-grid">
+                    <div class="card">
+                        <img src="%EC%9B%94%EB%B3%84%EC%86%90%EC%9D%B5%ED%98%84%ED%99%A9.png" alt="월별 손익 현황"
+                            class="evidence-img">
+                        <h3>월별 손익 현황 분석</h3>
+                        <p>매출의 양적 성장뿐만 아니라 질적 이익 구조를 한눈에 파악합니다.</p>
+                    </div>
+                    <div class="card">
+                        <img src="%EC%9E%AC%EB%AC%B4%EC%84%B1%EA%B3%BC%EB%A6%AC%ED%8F%AC%ED%8A%B8.png" alt="재무 성과 리포트"
+                            class="evidence-img">
+                        <h3>재무 성과 통합 리포트</h3>
+                        <p>투자 라운드 및 외부 공시를 위한 전문적인 재무 성과 지표를 제공합니다.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- FINAL CTA: PILOT PROGRAM -->
+            <div id="survey" class="scarcity-box">
+                <div class="badge">Limited Access</div>
+                <div class="live-count">
+                    <div class="live-dot"></div>
+                    현재 87명의 대표님이 파일럿 프로그램에 참여 중입니다.
+                </div>
+                <h2>Pilot Program 참여 기업 모집 중</h2>
+                <p style="margin-bottom: 2rem; color: var(--text-secondary);"><b>1인 대표님 및 스타트업</b>을 대상으로 재무 리스크 관리 시스템을
+                    구축하는 파일럿 프로그램을 운영 중입니다.<br>참여 기업에게는 3개월 무료 체험 및 기능 피드백 우선권을 부여합니다.</p>
+                <a href="https://forms.gle/TgRXNMHf54uuyv8b8" target="_blank" class="btn btn-primary"
+                    style="padding: 1.3rem 3.5rem; font-size: 1.2rem;">지금 무료로 신청하기</a>
+                <p style="margin-top: 1.5rem; font-size: 0.85rem; color: var(--text-secondary);">* 신청 시 정식 LOI(사용 의향서)
+                    동의 절차가 진행됩니다.</p>
+            </div>
+
+            <footer
+                style="text-align: center; padding: 6rem 0 4rem; border-top: 1px solid var(--glass-border); margin-top: 5rem;">
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">&copy; 2026 AccountingFlow. All rights
+                    reserved.</p>
+            </footer>
+    </div>
+
+    <script>
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Section Reveal Animation
+        const sections = document.querySelectorAll('.section');
+        const sectionObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        sections.forEach(section => {
+            sectionObserver.observe(section);
+        });
+
+        // Immediate show for hero (if not in a section)
+        document.addEventListener('DOMContentLoaded', () => {
+            // Hero sections usually don't need reveal if they are at the top
+            // But let's trigger anyway if needed
+        });
+    </script>
+</body>
+
+</html>
