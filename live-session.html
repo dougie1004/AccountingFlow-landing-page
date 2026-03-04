@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Session 신청 | AccountingFlow x Google AI Studio</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" as="style" crossorigin
+        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/variable/pretendardvariable.css" />
+    <style>
+        :root {
+            --primary-bg: #02040a;
+            --accent: #3b82f6;
+            --accent-glow: rgba(59, 130, 246, 0.5);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --glass-bg: rgba(15, 23, 42, 0.8);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --card-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Pretendard Variable', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--primary-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background Gradient */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 30%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(59, 130, 246, 0.05) 0%, transparent 50%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        header {
+            padding: 2.5rem 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .logo img {
+            width: 180px;
+            height: auto;
+        }
+
+        .hero-content {
+            text-align: center;
+            padding: 4rem 0 6rem;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.6rem 1.4rem;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid var(--accent);
+            border-radius: 100px;
+            color: var(--accent);
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        h1 {
+            font-size: clamp(2.2rem, 5vw, 3.8rem);
+            font-weight: 900;
+            line-height: 1.15;
+            margin-bottom: 1.5rem;
+            letter-spacing: -2px;
+            word-break: keep-all;
+            background: linear-gradient(180deg, #fff 0%, #94a3b8 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-content p {
+            font-size: clamp(1.1rem, 2vw, 1.4rem);
+            color: var(--text-secondary);
+            max-width: 800px;
+            margin: 0 auto 3rem;
+        }
+
+        /* Session Info Boxes */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 4rem;
+        }
+
+        .info-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: left;
+            transition: transform 0.3s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+        }
+
+        .info-card i {
+            font-size: 2rem;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+        }
+
+        .info-card h3 {
+            margin-bottom: 0.8rem;
+            font-size: 1.3rem;
+        }
+
+        /* Form Area */
+        .form-section {
+            background: var(--glass-bg);
+            border: 2px solid var(--accent);
+            border-radius: 30px;
+            padding: 10px;
+            margin-bottom: 6rem;
+            box-shadow: 0 0 50px rgba(59, 130, 246, 0.2);
+            position: relative;
+        }
+
+        .form-section::before {
+            content: '👇 지금 바로 발표 신청하기';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--accent);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 800;
+            font-size: 0.95rem;
+            z-index: 10;
+        }
+
+        iframe {
+            width: 100%;
+            height: 1000px;
+            /* 설문 길이에 따라 넉넉하게 설정 */
+            border: none;
+            border-radius: 20px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 4rem 0;
+            border-top: 1px solid var(--glass-border);
+            color: var(--text-secondary);
+        }
+
+        /* Live Notification Effect */
+        .live-status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            color: #10b981;
+            /* Green */
+        }
+
+        .pulse {
+            width: 10px;
+            height: 10px;
+            background: #10b981;
+            border-radius: 50%;
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+            }
+
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+            }
+
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <a href="index.html"><img src="accountingflow_logo_youtube2.png" alt="AccountingFlow Logo"></a>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="hero-content">
+            <div class="badge">BizDev Camp 15기 특별 세션</div>
+            <div class="live-status">
+                <div class="pulse"></div> 8명 이상 신청 시 실시간 라이브 개최 확정
+            </div>
+            <h1>구글 AI Studio로 만드는<br>'나만의 회계 프로그램' 라이브</h1>
+            <p>숫자에 강한 창업자가 끝까지 살아남습니다. AI를 활용한 실전 재무 로직 구축부터 전문가의 CFO 인사이트까지, 동료 수강생들과 함께 나누는 특별한 성장 세션에 도전하세요.</p>
+
+            <div class="info-grid">
+                <div class="info-card">
+                    <i class="fas fa-magic"></i>
+                    <h3>AI DIY 경험</h3>
+                    <p>Google AI Studio를 활용해 우리 회사만의 맞춤형 회계 로직을 직접 짜보는 실전 세션입니다.</p>
+                </div>
+                <div class="info-card">
+                    <i class="fas fa-brain"></i>
+                    <h3>CFO 인사이트</h3>
+                    <p>전문가가 설계한 AccountingFlow의 핵심 기능을 통해 진짜 경영 대시보드의 중요성을 배웁니다.</p>
+                </div>
+                <div class="info-card">
+                    <i class="fas fa-users"></i>
+                    <h3>커뮤니티 성장</h3>
+                    <p>발표자로 참여하여 자신의 창업 경험과 재무적 교훈을 동료들과 공유하고 함께 성장합니다.</p>
+                </div>
+            </div>
+
+            <div class="form-section" id="apply">
+                <!-- Tally Embed (발표 신청 폼) -->
+                <!-- 사용자님, 발표 신청 전용 Tally URL이 있다면 아래 src를 교체해 주세요! -->
+                <iframe
+                    src="https://tally.so/embed/81d5A5?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1"
+                    loading="lazy" title="Live Session 발표 신청">
+                </iframe>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 AccountingFlow. All rights reserved.</p>
+    </footer>
+
+    <script async src="https://tally.so/widgets/embed.js"></script>
+</body>
+
+</html>
