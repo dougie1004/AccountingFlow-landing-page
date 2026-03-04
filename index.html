@@ -87,14 +87,11 @@
             border-bottom: 1px solid var(--glass-border);
         }
 
-        .logo {
-            font-size: 1.6rem;
-            font-weight: 900;
-            letter-spacing: -1.5px;
-            background: linear-gradient(135deg, #fff 0%, #3b82f6 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .logo img {
+            height: 32px;
+            /* 기본 높이 설정 */
+            width: auto;
+            display: block;
         }
 
         /* Titles */
@@ -491,7 +488,9 @@
 
     <div class="container">
         <header>
-            <div class="logo">AccountingFlow</div>
+            <div class="logo">
+                <img src="accountingflow_logo_youtube2.png" alt="AccountingFlow Logo">
+            </div>
             <nav>
                 <a href="https://tally.so/r/81d5A5" target="_blank" class="btn btn-outline"
                     style="padding: 0.5rem 1rem; font-size: 0.9rem;">진단 시작하기</a>
